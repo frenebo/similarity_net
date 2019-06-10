@@ -3,7 +3,9 @@ import csv
 import os
 import random
 import imghdr
+from PIL import Image
 
+from .utils import load_image_as_np_array, resize_image, get_img_resize_scale
 from .similarity_generator import SimilarityGenerator
 
 def dir_dict_from_file(dir_list_filepath):
@@ -94,3 +96,32 @@ class CommonDirGenerator(SimilarityGenerator):
                 pair_descriptions.append(pair_description)
 
             self.batch_pair_descriptions.append(pair_descriptions)
+
+    @staticmethod
+    def load_image_from_path(image_path, min_img_size=800, max_img_size=1400):
+        img = load_image_as_np_array(image_path)
+        scale = get_img_resize_scale(image_path, min_img_size=min_img_size, max_img_size=max_img_size)
+
+        img = resize_image(img, scale)
+
+        return img
+
+    def get_input_output(self, index):
+        pair_descriptions = self.patch_pair_descriptions[index]
+
+        inputs = []
+        outputs = []
+
+        for description in pair_descriptions:
+            if description.pair_matches:
+                score = 1.0
+            else:
+                score = 0.0
+
+            first_image = self.load_image_from_path(description.first_image_path)
+            second_image = self.load_image_from_path(description.second_image_path)
+
+            inputs.append([first_image, second_image])
+            outputs.append(score)
+
+        return inputs, outputs

@@ -1,10 +1,62 @@
 from keras.models import Model
-from keras.layer import Input
+from keras.layer import Input, Conv2D, GlobalAveragePooling2D, Dense, Concatenate, Activation
 
-def similaritynet(backbone_model):
+from .backbones.backbone import Backbone
+
+def mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs):
+    assert len(first_bb_outputs) == len(second_bb_outputs), "Should be same number of first and of second backbone outputs"
+
+    bb_combined_layers = []
+
+    for i, (first_output, second_output) in enumerate(zip(first_bb_outputs, second_bb_outputs)):
+        assert first_output.shape == second_output.shape, "First and second outputs should have same number of filters, even if not same width/height"
+        assert len(first_output.shape) == 3, "First output should be 2D"
+        assert len(second_output.shape) == 3, "Second output should be 2D"
+
+        shared_conv_layer = Conv2D(
+            filters=10,
+            kernel_size=9,
+            activation="relu",
+            name="first_shared_conv_{}".format(i)
+        )
+
+        shared_pooling_layer = GlobalAveragePooling2D(name="shared_pooling_{}".format(i))
+
+        first = first_output
+        first = shared_conv_layer(first)
+        first = shared_pooling_layer(first)
+
+        second = second_output
+        second = shared_conv_layer(second)
+        second = shared_pooling_layer(second)
+
+        # dense_combined = Dense()
+        x = Concatenate(axis=-1, name="concat_{}".format(i))([first, second])
+        x = Dense(units=10, name="dense_{}".format(i))
+
+        bb_combined_layers.append(x)
+
+    x = Concatenate(axis=-1, name="concat_layers")(bb_combined_layers)
+    x = Dense(units=10, name="first_dense_after_concat")(x)
+    x = Dense(units=1, name="second_dense_after_concat")(x)
+    x = Activation("sigmoid")(x)
+
+    return x
+
+def similaritynet(backbone):
+    assert isinstance(backbone, Backbone)
+
     first_input = Input((None, None, 3))
     second_input = Input((None, None, 3))
 
-    first_input_ = backbone_model(first_input)
-    second_through_backbone = backbone_model(second_input)
+    first_bb_outputs = backbone.call_on_inputs(first_input)
+    second_bb_outputs = backbone.call_on_inputs(second_input)
+
+    prob = mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs)
+
+    model = Model(inputs=[first_input, second_input], outputs=prob)
+
+    return model
+
+
 

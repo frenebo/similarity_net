@@ -19,8 +19,14 @@ class SimilarityGenerator(keras.utils.Sequence):
     def initialize_batches(self, batch_size, pair_count):
         raise NotImplementedError()
 
+    def get_input_output(self, index):
+        raise NotImplementedError()
+
     def __len__(self):
         return self.batch_size
+
+    def __getitem__(self, index):
+        inputs, targets = self.get_input_output(index)
     #     """
     #     Number of batches for generator.
     #     """
