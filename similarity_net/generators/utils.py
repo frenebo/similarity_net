@@ -17,7 +17,7 @@ def get_img_resize_scale(orig_np_shape, min_img_size, max_img_size):
 
     return scale
 
-def resize_img(np_img, scale):
+def resize_image(np_img, scale):
     resized_img = cv2.resize(img, None, fx=scale, fy=scale)
 
     return resized_img

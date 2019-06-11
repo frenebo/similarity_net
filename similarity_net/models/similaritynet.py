@@ -1,5 +1,5 @@
 from keras.models import Model
-from keras.layer import Input, Conv2D, GlobalAveragePooling2D, Dense, Concatenate, Activation
+from keras.layers import Input, Conv2D, GlobalAveragePooling2D, Dense, Concatenate, Activation
 
 from .backbones.backbone import Backbone
 
