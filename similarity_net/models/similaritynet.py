@@ -43,7 +43,7 @@ def mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs):
 
     return x
 
-def similaritynet(backbone):
+def create_similaritynet(backbone):
     assert isinstance(backbone, Backbone)
 
     first_input = Input((None, None, 3))
@@ -57,6 +57,3 @@ def similaritynet(backbone):
     model = Model(inputs=[first_input, second_input], outputs=prob)
 
     return model
-
-
-
