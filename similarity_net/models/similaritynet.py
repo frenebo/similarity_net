@@ -9,9 +9,11 @@ def mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs):
     bb_combined_layers = []
 
     for i, (first_output, second_output) in enumerate(zip(first_bb_outputs, second_bb_outputs)):
-        assert first_output.shape == second_output.shape, "First and second outputs should have same number of filters, even if not same width/height"
-        assert len(first_output.shape) == 3, "First output should be 2D"
-        assert len(second_output.shape) == 3, "Second output should be 2D"
+        # print("first shape", first_output.shape)
+        # print("second shape", second_output.shape)
+        assert first_output.shape[-1] == second_output.shape[-1], "First and second outputs should have same number of filters, even if not same width/height"
+        assert len(first_output.shape) == 4, "First output should be 2D"
+        assert len(second_output.shape) == 4, "Second output should be 2D"
 
         shared_conv_layer = Conv2D(
             filters=10,
@@ -32,7 +34,7 @@ def mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs):
 
         # dense_combined = Dense()
         x = Concatenate(axis=-1, name="concat_{}".format(i))([first, second])
-        x = Dense(units=10, name="dense_{}".format(i))
+        x = Dense(units=10, name="dense_{}".format(i))(x)
 
         bb_combined_layers.append(x)
 

@@ -1,5 +1,6 @@
 from keras.applications.mobilenet import MobileNet
 from keras.models import Model
+import keras
 
 from .backbone import Backbone
 
