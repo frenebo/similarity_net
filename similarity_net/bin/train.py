@@ -1,6 +1,7 @@
 import sys
 import os
 import argparse
+import keras
 
 if __name__ == "__main__" and __package__ is None:
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -26,6 +27,7 @@ def parse_command_line_args(command_line_args):
     parser.add_argument("--batch-size", help="Batch size", type=int, default=1)
     parser.add_argument("--steps-per-epoch", help="Steps per epoch", type=int, default=10)
     parser.add_argument("--proportion-matching", help="Proportion of matching images that the generator should produce", type=float, default=0.5)
+    parser.add_argument("--lr", help="Learning rate", default=0.001, type=float)
 
     parser.add_argument("backbone", help="Name of backbone to use.")
 
@@ -97,6 +99,11 @@ def main():
         model = instantiate_model(backbone_name=args.backbone)
 
     callbacks = create_callbacks(args.snapshot_path)
+
+    model.compile(
+        loss="categorical_crossentropy",
+        optimizer=keras.optimizers.adam(lr=args.lr, clipnorm=0.001)
+    )
 
     return model.fit_generator(
         generator=generator,

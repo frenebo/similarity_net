@@ -89,25 +89,30 @@ class CommonDirGenerator(SimilarityGenerator):
                     possible_second_classes = [name for name in class_names if name != first_image_class]
                     second_image_class = random.choice(possible_second_classes)
 
-                first_image_path  = random.choice(self.class_contained_images[first_image_class])
-                second_image_path = random.choice(self.class_contained_images[second_image_class])
+                first_image_filename = random.choice(self.class_contained_images[first_image_class])
+                first_image_path = os.path.join(self.class_dir_dict[first_image_class], first_image_filename)
+
+                second_image_filename = random.choice(self.class_contained_images[second_image_class])
+                second_image_path = os.path.join(self.class_dir_dict[second_image_class], second_image_filename)
 
                 pair_description = PairDescription(pair_matches, first_image_path, second_image_path)
                 pair_descriptions.append(pair_description)
 
             self.batch_pair_descriptions.append(pair_descriptions)
 
+        random.shuffle(self.batch_pair_descriptions)
+
     @staticmethod
     def load_image_from_path(image_path, min_img_size=800, max_img_size=1400):
         img = load_image_as_np_array(image_path)
-        scale = get_img_resize_scale(image_path, min_img_size=min_img_size, max_img_size=max_img_size)
+        scale = get_img_resize_scale(img.shape, min_img_size=min_img_size, max_img_size=max_img_size)
 
         img = resize_image(img, scale)
 
         return img
 
     def get_input_output(self, index):
-        pair_descriptions = self.patch_pair_descriptions[index]
+        pair_descriptions = self.batch_pair_descriptions[index]
 
         inputs = []
         outputs = []

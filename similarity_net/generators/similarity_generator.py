@@ -14,7 +14,7 @@ class SimilarityGenerator(keras.utils.Sequence):
         self.initialize(self.batch_size, self.steps_per_epoch, self.proportion_matching)
 
     def on_epoch_end(self):
-        self.intialize(self.batch_size, self.steps_per_epoch, self.proportion_matching)
+        self.initialize(self.batch_size, self.steps_per_epoch, self.proportion_matching)
 
     def initialize_batches(self, batch_size, pair_count):
         raise NotImplementedError()

@@ -14,7 +14,7 @@ def load_model(model_path, backbone_name):
 
 
 def instantiate_model(backbone_name):
-    BackboneClass = backbones.get_backbone_class(backbone_instance)
+    BackboneClass = backbones.get_backbone_class(backbone_name)
     backbone = BackboneClass()
 
     return create_similaritynet(backbone)
