@@ -3,9 +3,11 @@ import csv
 import os
 import random
 import imghdr
+import numpy as np
+from keras.preprocessing.image import img_to_array, load_img
 from PIL import Image
 
-from .utils import load_image_as_np_array, resize_image, get_img_resize_scale
+from .utils import resize_image, get_img_resize_scale
 from .similarity_generator import SimilarityGenerator
 
 def dir_dict_from_file(dir_list_filepath):
@@ -72,6 +74,7 @@ class CommonDirGenerator(SimilarityGenerator):
         super(CommonDirGenerator, self).__init__(**kwargs)
 
     def initialize(self, batch_size, steps_per_epoch, proportion_matching):
+        # print("Initializing with steps {}, proportion {}, and batch size {}".format(steps_per_epoch, proportion_matching, batch_size))
         class_names = list(self.class_contained_images.keys())
         self.batch_pair_descriptions = []
 
@@ -80,6 +83,7 @@ class CommonDirGenerator(SimilarityGenerator):
 
             for j in range(batch_size):
                 pair_matches = random.uniform(0, 1) < proportion_matching
+                # print("Pair matches: ", pair_matches)
 
                 first_image_class = random.choice(class_names)
 
@@ -104,18 +108,24 @@ class CommonDirGenerator(SimilarityGenerator):
 
     @staticmethod
     def load_image_from_path(image_path, min_img_size=800, max_img_size=1400):
-        img = load_image_as_np_array(image_path)
+        pil_img = load_img(image_path)
+        img = img_to_array(pil_img)
+        # img = load_image_as_np_array(image_path)
         scale = get_img_resize_scale(img.shape, min_img_size=min_img_size, max_img_size=max_img_size)
 
         img = resize_image(img, scale)
+
+        # img /= 127.5
+        # img -= 1.
 
         return img
 
     def get_input_output(self, index):
         pair_descriptions = self.batch_pair_descriptions[index]
 
-        inputs = []
-        outputs = []
+        first_images = []
+        second_images = []
+        scores = []
 
         for description in pair_descriptions:
             if description.pair_matches:
@@ -126,7 +136,12 @@ class CommonDirGenerator(SimilarityGenerator):
             first_image = self.load_image_from_path(description.first_image_path)
             second_image = self.load_image_from_path(description.second_image_path)
 
-            inputs.append([first_image, second_image])
-            outputs.append(score)
+            # inputs.append([first_image, second_image])
+            first_images.append(first_image)
+            second_images.append(second_image)
+            scores.append(score)
+
+        inputs = [np.array(first_images), np.array(second_images)]
+        outputs = np.array(scores)
 
         return inputs, outputs

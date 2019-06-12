@@ -18,6 +18,7 @@ def mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs):
         shared_conv_layer = Conv2D(
             filters=10,
             kernel_size=9,
+            padding="same",
             activation="relu",
             name="first_shared_conv_{}".format(i)
         )
@@ -34,14 +35,14 @@ def mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs):
 
         # dense_combined = Dense()
         x = Concatenate(axis=-1, name="concat_{}".format(i))([first, second])
-        x = Dense(units=10, name="dense_{}".format(i))(x)
+        x = Dense(units=10, name="dense_{}".format(i), activation="tanh")(x)
 
         bb_combined_layers.append(x)
 
     x = Concatenate(axis=-1, name="concat_layers")(bb_combined_layers)
-    x = Dense(units=10, name="first_dense_after_concat")(x)
-    x = Dense(units=1, name="second_dense_after_concat")(x)
-    x = Activation("sigmoid")(x)
+    # x = Dense(units=10, name="first_dense_after_concat", activation="tanh")(x)
+    x = Dense(units=1, name="second_dense_after_concat", activation="tanh")(x)
+    # x = Activation("softmax")(x)
 
     return x
 

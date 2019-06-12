@@ -1,4 +1,5 @@
 import keras
+import numpy as np
 
 class SimilarityGenerator(keras.utils.Sequence):
     def __init__(
@@ -11,12 +12,13 @@ class SimilarityGenerator(keras.utils.Sequence):
         self.steps_per_epoch = steps_per_epoch
         self.proportion_matching = proportion_matching
 
-        self.initialize(self.batch_size, self.steps_per_epoch, self.proportion_matching)
+        # self.initialize(self.batch_size, self.steps_per_epoch, self.proportion_matching)
+        self.on_epoch_end()
 
     def on_epoch_end(self):
         self.initialize(self.batch_size, self.steps_per_epoch, self.proportion_matching)
 
-    def initialize_batches(self, batch_size, pair_count):
+    def initialize(self, batch_size, pair_count):
         raise NotImplementedError()
 
     def get_input_output(self, index):
@@ -27,17 +29,18 @@ class SimilarityGenerator(keras.utils.Sequence):
 
     def __getitem__(self, index):
         inputs, targets = self.get_input_output(index)
-    #     """
-    #     Number of batches for generator.
-    #     """
 
-    #     return len(self.groups)
+        # Should be [first_image_batch, second_image_batch]
+        assert isinstance(inputs, list)
+        assert len(inputs) == 2
+        assert isinstance(inputs[0], np.ndarray)
+        assert isinstance(inputs[1], np.ndarray)
 
-    # def __getitem__(self, index):
-    #     """
-    #     Keras sequence method for generating batches.
-    #     """
-    #     group = self.groups[index]
-    #     inputs, targets = self.compute_input_output(group)
+        # should be target score batch
+        assert isinstance(targets, np.ndarray)
 
-    #     return inputs, targets
+        # print(targets)
+
+
+
+        return inputs, targets
