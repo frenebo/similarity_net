@@ -5,7 +5,7 @@ import keras
 
 if __name__ == "__main__" and __package__ is None:
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
-    import similarity_net.bin  # noqa: F401
+    import similarity_net.bin
     __package__ = "similarity_net.bin"
 
 from ..generators.common_dir_generator import CommonDirGenerator
@@ -31,8 +31,6 @@ def parse_command_line_args(command_line_args):
 
     parser.add_argument("backbone", help="Name of backbone to use.")
 
-    # subparsers = parser.add_argument(h)
-    # parser.add_argum
     subparsers = parser.add_subparsers(help="Arguments for specific dataset types", dest="dataset_type")
     subparsers.required = True
 
