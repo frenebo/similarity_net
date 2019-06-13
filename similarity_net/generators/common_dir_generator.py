@@ -95,9 +95,11 @@ class CommonDirGenerator(SimilarityGenerator):
 
                 first_image_filename = random.choice(self.class_contained_images[first_image_class])
                 first_image_path = os.path.join(self.class_dir_dict[first_image_class], first_image_filename)
+                first_image_path = os.path.join(self.root_path, first_image_path)
 
                 second_image_filename = random.choice(self.class_contained_images[second_image_class])
                 second_image_path = os.path.join(self.class_dir_dict[second_image_class], second_image_filename)
+                second_image_path  = os.path.join(self.root_path, second_image_path)
 
                 pair_description = PairDescription(pair_matches, first_image_path, second_image_path)
                 pair_descriptions.append(pair_description)
