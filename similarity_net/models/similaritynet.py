@@ -20,17 +20,25 @@ def mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs):
             kernel_size=9,
             padding="same",
             activation="relu",
-            name="first_shared_conv_{}".format(i)
+            name="shared_conv_{}".format(i),
+        )
+        shared_activation_layer = Activation(
+            "relu",
+            name="shared_activation_{}".format(i),
         )
 
-        shared_pooling_layer = GlobalAveragePooling2D(name="shared_pooling_{}".format(i))
+        shared_pooling_layer = GlobalAveragePooling2D(
+            name="shared_pooling_{}".format(i),
+        )
 
         first = first_output
         first = shared_conv_layer(first)
+        first = shared_activation_layer(first)
         first = shared_pooling_layer(first)
 
         second = second_output
         second = shared_conv_layer(second)
+        second = shared_activation_layer(second)
         second = shared_pooling_layer(second)
 
         # dense_combined = Dense()

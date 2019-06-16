@@ -24,6 +24,7 @@ class SimilarityGenerator(keras.utils.Sequence):
     def get_input_output(self, index):
         raise NotImplementedError()
 
+    # @TODO is this right?
     def __len__(self):
         return self.batch_size
 
