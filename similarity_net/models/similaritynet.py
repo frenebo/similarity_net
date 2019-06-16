@@ -48,9 +48,9 @@ def mesh_backbone_outputs_and_return_prob(first_bb_outputs, second_bb_outputs):
         bb_combined_layers.append(x)
 
     x = Concatenate(axis=-1, name="concat_layers")(bb_combined_layers)
-    # x = Dense(units=10, name="first_dense_after_concat", activation="tanh")(x)
+    x = Dense(units=10, name="first_dense_after_concat", activation="tanh")(x)
     x = Dense(units=1, name="second_dense_after_concat", activation="tanh")(x)
-    # x = Activation("softmax")(x)
+    x = Activation("softmax")(x)
 
     return x
 
