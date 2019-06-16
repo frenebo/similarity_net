@@ -29,12 +29,20 @@ def parse_command_line_args(command_line_args):
     parser.add_argument("--proportion-matching", help="Proportion of matching images that the generator should produce", type=float, default=0.5)
     parser.add_argument("--lr", help="Learning rate", default=0.0001, type=float)
 
-    parser.add_argument("backbone", help="Name of backbone to use.")
+    parser.add_argument("backbone", help="Name of backbone to use")
 
-    subparsers = parser.add_subparsers(help="Arguments for specific dataset types", dest="dataset_type")
-    subparsers.required = True
+    # parser.add_argument("backbone", help="Name of backbone to use.")
+    # backbone_subparsers = parser.add_subparsers(help="Which backbone to use", dest="backbone")
 
-    common_dir_parser = subparsers.add_parser("common-dir")
+    # mobilenet_parser = backbone_subparsers.add_parser("mobilenet")
+    
+    # densenet_parser = backbone_subparsers.add_parser("densenet")
+    # densenet_parser.add_argument("densenet_version", help="Which version of densenet to use")
+
+    dataset_subparsers = parser.add_subparsers(help="Arguments for specific dataset types", dest="dataset_type")
+    dataset_subparsers.required = True
+
+    common_dir_parser = dataset_subparsers.add_parser("common-dir")
     common_dir_parser.add_argument("dir_list_file", help="File that lists the paths of all dirs")
     common_dir_parser.add_argument("root_dir", help="Root dir from which to look for the dirs listed in dir list file")
 
@@ -58,18 +66,29 @@ def create_callbacks(model, snapshot_path=None):
 
     if snapshot_path is not None:
         # ensure directory created firs
-        makedirs(args.snapshot_path)
+        makedirs(snapshot_path)
         checkpoint = keras.callbacks.ModelCheckpoint(
             os.path.join(
-                args.snapshot_path,
+                snapshot_path,
                 'model_snapshot_{epoch:02d}.h5',
             ),
             verbose=1,
-            # save_best_only=True,
+            save_best_only=True,
             # monitor="mAP",
             # mode='max'
         )
         callbacks.append(checkpoint)
+    
+    callbacks.append(keras.callbacks.ReduceLROnPlateau(
+        monitor    = 'loss',
+        factor     = 0.2,
+        patience   = 2,
+        verbose    = 1,
+        mode       = 'auto',
+        min_delta  = 0.0001,
+        cooldown   = 0,
+        min_lr     = 0
+    ))
 
     return callbacks
 
@@ -96,7 +115,7 @@ def main():
     else:
         model = instantiate_model(backbone_name=args.backbone)
 
-    callbacks = create_callbacks(args.snapshot_path)
+    callbacks = create_callbacks(model=model, snapshot_path=args.snapshot_path)
 
     model.compile(
         loss="mean_squared_error",

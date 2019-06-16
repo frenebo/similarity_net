@@ -4,7 +4,7 @@ import keras
 
 from .backbone import Backbone
 
-class KerasMobilenetBackbone(Backbone):
+class MobilenetBackbone(Backbone):
     def __init__(
         self,
         alpha=1.0,
@@ -21,7 +21,7 @@ class KerasMobilenetBackbone(Backbone):
 
         self.backbone_model = Model(inputs=inputs, outputs=backbone_outputs, name=mnet.name)
 
-        super(KerasMobilenetBackbone, self).__init__()
+        super(MobilenetBackbone, self).__init__()
 
     def call_on_inputs(self, inputs):
         return self.backbone_model(inputs)
