@@ -11,7 +11,7 @@ def get_img_resize_scale(orig_np_shape, min_img_size, max_img_size):
     smallest_side = min(orig_height, orig_width)
     largest_side = max(orig_height, orig_width)
 
-    scale = smallest_side / min_img_size
+    scale = min_img_size / smallest_side
     if largest_side * scale > max_img_size:
         scale = max_img_side / largest_side
 
