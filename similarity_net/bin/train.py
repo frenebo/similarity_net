@@ -31,14 +31,6 @@ def parse_command_line_args(command_line_args):
 
     parser.add_argument("backbone", help="Name of backbone to use")
 
-    # parser.add_argument("backbone", help="Name of backbone to use.")
-    # backbone_subparsers = parser.add_subparsers(help="Which backbone to use", dest="backbone")
-
-    # mobilenet_parser = backbone_subparsers.add_parser("mobilenet")
-    
-    # densenet_parser = backbone_subparsers.add_parser("densenet")
-    # densenet_parser.add_argument("densenet_version", help="Which version of densenet to use")
-
     dataset_subparsers = parser.add_subparsers(help="Arguments for specific dataset types", dest="dataset_type")
     dataset_subparsers.required = True
 
@@ -73,12 +65,12 @@ def create_callbacks(model, snapshot_path=None):
                 'model_snapshot_{epoch:02d}.h5',
             ),
             verbose=1,
-            save_best_only=True,
+            # save_best_only=True,
             # monitor="mAP",
             # mode='max'
         )
         callbacks.append(checkpoint)
-    
+
     callbacks.append(keras.callbacks.ReduceLROnPlateau(
         monitor    = 'loss',
         factor     = 0.2,
@@ -128,7 +120,7 @@ def main():
             outputs = model.predict(inputs)
             print("Outputs: ", outputs)
 
-    test_model()
+    # test_model()
 
     model.fit_generator(
         generator=generator,
@@ -138,7 +130,7 @@ def main():
         callbacks=callbacks,
     )
 
-    test_model()
+    # test_model()
 
 if __name__ == "__main__":
     main()
