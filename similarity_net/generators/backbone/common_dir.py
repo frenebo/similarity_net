@@ -8,7 +8,6 @@ class CommonDirBackboneGenerator(BackboneGenerator):
         dir_list_filepath,
         root_path,
         **kwargs):
-        super(CommonDirBackboneGenerator, self).__init__(**kwargs)
 
         self.class_name_indices = {}
         for i, class_name in enumerate(self.class_dir_dict.keys()):
@@ -24,6 +23,8 @@ class CommonDirBackboneGenerator(BackboneGenerator):
         for class_name in self.class_contained_images:
             for filename in self.class_contained_images[class_name]:
                 self.class_filename_pairs.append((class_name, filename))
+
+        super(CommonDirBackboneGenerator, self).__init__(**kwargs)
 
     def num_items(self):
         """ Number of training items available
