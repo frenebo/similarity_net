@@ -40,7 +40,7 @@ class CommonDirBackboneGenerator(BackboneGenerator):
         class_dir = os.path.join(self.root_path, self.class_dir_dict[class_name])
         filepath = os.path.join(class_dir, filename)
 
-        img = img_to_array(load_img(image_path))
+        img = img_to_array(load_img(filepath))
         print("img shape: ", img.shape)
         print("class: ", class_idx)
         return img, class_idx
