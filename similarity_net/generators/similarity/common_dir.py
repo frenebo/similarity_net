@@ -1,55 +1,13 @@
 import keras
-import csv
 import os
 import random
-import imghdr
 import numpy as np
 from keras.preprocessing.image import img_to_array, load_img
 from PIL import Image
 
 from .utils import resize_image, get_img_resize_scale
 from .similarity_generator import SimilarityGenerator
-
-def dir_dict_from_file(dir_list_filepath):
-    with open(dir_list_filepath, "r", newline="") as dir_list_file:
-        csv_reader = csv.reader(dir_list_file, delimiter=",")
-
-        class_dir_dict = {}
-
-        for line_no, row in enumerate(csv_reader, 1):
-            # skip empty lines
-            if not row:
-                continue
-
-            try:
-                class_name, class_dir = row
-            except ValueError:
-                raise ValueError("Line {}: should be formatted 'class_name,class_dir'".format(line_no))
-
-            class_dir_dict[class_name] = class_dir
-
-    return class_dir_dict
-
-def get_class_contained_images(class_dir_dict, root_path):
-    class_contained_images = {}
-
-    for class_name, class_dir in class_dir_dict.items():
-        contained_images = []
-
-        full_dir_path = os.path.join(root_path, class_dir)
-        for filename in sorted(os.listdir(full_dir_path)):
-            # Check if it's an image
-            if imghdr.what(os.path.join(full_dir_path, filename)) is None:
-                continue
-
-            contained_images.append(filename)
-
-        if len(contained_images) == 0:
-            raise ValueError("Couldn't find any images in directory '{}'".format(full_dir_path))
-
-        class_contained_images[class_name] = contained_images
-
-    return class_contained_images
+from ..common_dir_utils import dir_dict_from_file, get_class_contained_images
 
 class PairDescription:
     def __init__(self, pair_matches, first_image_path, second_image_path):
@@ -57,7 +15,7 @@ class PairDescription:
         self.first_image_path = first_image_path
         self.second_image_path = second_image_path
 
-class CommonDirGenerator(SimilarityGenerator):
+class CommonDirSimilarityGenerator(SimilarityGenerator):
     def __init__(
         self,
         dir_list_filepath,
@@ -71,7 +29,7 @@ class CommonDirGenerator(SimilarityGenerator):
         # Filled in self.initialize
         self.batch_pair_descriptions = None
 
-        super(CommonDirGenerator, self).__init__(**kwargs)
+        super(CommonDirSimilarityGenerator, self).__init__(**kwargs)
 
     def initialize(self, batch_size, steps_per_epoch, proportion_matching):
         # print("Initializing with steps {}, proportion {}, and batch size {}".format(steps_per_epoch, proportion_matching, batch_size))

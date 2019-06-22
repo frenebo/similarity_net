@@ -26,7 +26,7 @@ class SimilarityGenerator(keras.utils.Sequence):
 
     # @TODO is this right?
     def __len__(self):
-        return self.batch_size
+        return self.steps_per_epoch
 
     def __getitem__(self, index):
         inputs, targets = self.get_input_output(index)

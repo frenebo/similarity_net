@@ -8,7 +8,7 @@ if __name__ == "__main__" and __package__ is None:
     import similarity_net.bin
     __package__ = "similarity_net.bin"
 
-from ..generators.common_dir_generator import CommonDirGenerator
+# from ..generators.similarity.common_dir import CommonDirSimilarityGenerator
 from ..models import load_model, create_similaritynet
 from ..models.backbones import get_backbone_class
 
@@ -96,7 +96,7 @@ def main():
     #     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_names
 
     if args.dataset_type == "common-dir":
-        generator = CommonDirGenerator(
+        generator = CommonDirSimilarityGenerator(
             dir_list_filepath=args.dir_list_file,
             root_path=args.root_dir,
             batch_size=args.batch_size,
