@@ -2,6 +2,8 @@ from .backbone_generator import BackboneGenerator
 from ..common_dir_utils import dir_dict_from_file, get_class_contained_images
 from keras.preprocessing.image import img_to_array, load_img
 
+import os
+
 class CommonDirBackboneGenerator(BackboneGenerator):
     def __init__(
         self,
