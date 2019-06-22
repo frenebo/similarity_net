@@ -11,6 +11,7 @@ if __name__ == "__main__" and __package__ is None:
 from ..generators.backbone.common_dir import CommonDirBackboneGenerator
 from ..models import load_model, create_similaritynet
 from ..models.backbones import get_backbone_class
+from ..utils import makedirs
 
 def check_parsed_args(args):
     pass
