@@ -8,12 +8,11 @@ class CommonDirBackboneGenerator(BackboneGenerator):
         dir_list_filepath,
         root_path,
         **kwargs):
+        self.class_dir_dict = dir_dict_from_file(dir_list_filepath)
 
         self.class_name_indices = {}
         for i, class_name in enumerate(self.class_dir_dict.keys()):
             self.class_name_indices[class_name] = i
-
-        self.class_dir_dict = dir_dict_from_file(dir_list_filepath)
 
         self.root_path = root_path
 
