@@ -106,11 +106,5 @@ def main():
         callbacks=callbacks,
     )
 
-
-    # model = create_similaritynet(backbone=backbone_model)
-
-    # model =
-    print(args)
-
 if __name__ == "__main__":
     main()
