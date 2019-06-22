@@ -11,6 +11,7 @@ if __name__ == "__main__" and __package__ is None:
 # from ..generators.similarity.common_dir import CommonDirSimilarityGenerator
 from ..models import load_model, create_similaritynet
 from ..models.backbones import get_backbone_class
+from ..utils import makedirs
 
 def check_parsed_args(args):
     if args.snapshot_path is None and not args.no_snapshots:
@@ -47,15 +48,6 @@ def parse_command_line_args(command_line_args):
     return args
 
 
-def makedirs(path):
-    # Intended behavior: try to create the directory,
-    # pass if the directory exists already, fails otherwise.
-    # Meant for Python 2.7/3.n compatibility.
-    try:
-        os.makedirs(path)
-    except OSError:
-        if not os.path.isdir(path):
-            raise
 
 def create_callbacks(model, snapshot_path=None):
     callbacks = []
