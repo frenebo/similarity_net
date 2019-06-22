@@ -85,9 +85,9 @@ def main():
     # Create backbone model
     BackboneClass = get_backbone_class(args.backbone)
     if args.from_weights is not None:
-        backbone_model = BackboneClass.from_weights(args.from_weights)
+        backbone_model = BackboneClass.from_weights(args.from_weights).backbone_model
     else:
-        backbone_model = BackboneClass()
+        backbone_model = BackboneClass().backbone_model
 
     # Create callbacks
     callbacks = create_callbacks(snapshot_path=args.snapshot_path)
