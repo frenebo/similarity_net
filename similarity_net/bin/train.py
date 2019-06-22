@@ -100,7 +100,7 @@ def main():
 
     if args.from_weights is None:
         BackboneClass = get_backbone_class(args.backbone)
-        if args.backbone_from_weights is None:
+        if args.backbone_from_weights is not None:
             backbone_model = BackboneClass.from_weights(args.backbone_from_weights)
         else:
             backbone_model = BackboneClass()

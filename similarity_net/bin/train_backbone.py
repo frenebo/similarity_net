@@ -83,7 +83,7 @@ def main():
 
     # Create backbone model
     BackboneClass = get_backbone_class(args.backbone)
-    if args.from_weights is None:
+    if args.from_weights is not None:
         backbone_model = BackboneClass.from_weights(args.from_weights)
     else:
         backbone_model = BackboneClass()
