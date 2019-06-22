@@ -11,7 +11,7 @@ class BackboneGenerator(keras.utils.Sequence):
         self.steps_per_epoch = steps_per_epoch
         self.batch_size = batch_size
 
-        self.indices = list(self.num_items())
+        self.indices = list(range(self.num_items()))
 
         self.on_epoch_end()
 
