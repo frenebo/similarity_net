@@ -18,13 +18,20 @@ class DenseNetBackbone(Backbone):
         except KeyError:
             possible_versions = list(possible_versions.keys())
             raise ValueError("Invalid Densenet version '{}'. Allowed versions: {}".format(net_version, possible_versions))
-        
+
         bb_layer_names = ["conv{}_block{}_concat".format(idx + 2, block_num) for idx, block_num in enumerate(blocks)]
         bb_layer_outputs = [net.get_layer(layer_name).output for layer_name in bb_layer_names]
 
         self.backbone_model = keras.models.Model(inputs=inputs, outputs=bb_layer_outputs)
 
         super(DenseNetBackbone, self).__init__()
-    
+
+    @staticmethod
+    def from_weights(weights_path):
+        bb = DenseNetBackbone()
+        bb.backbone_model.load_weights(weights_path)
+
+        return bb
+
     def call_on_inputs(self, inputs):
         return self.backbone_model(inputs)

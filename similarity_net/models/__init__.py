@@ -13,8 +13,8 @@ def load_model(model_path, backbone_name):
 # def save_model(model, model_):
 
 
-def instantiate_model(backbone_name):
-    BackboneClass = backbones.get_backbone_class(backbone_name)
-    backbone = BackboneClass()
+# def instantiate_model(backbone_name):
+#     BackboneClass = backbones.get_backbone_class(backbone_name)
+#     backbone = BackboneClass()
 
-    return create_similaritynet(backbone)
+#     return create_similaritynet(backbone)

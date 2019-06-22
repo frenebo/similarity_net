@@ -9,17 +9,21 @@ if __name__ == "__main__" and __package__ is None:
     __package__ = "similarity_net.bin"
 
 from ..generators.common_dir_generator import CommonDirGenerator
-from ..models import load_model, instantiate_model
+from ..models import load_model, create_similaritynet
+from ..models.backbones import get_backbone_class
 
 def check_parsed_args(args):
     if args.snapshot_path is None and not args.no_snapshots:
         raise ValueError("Must provide --snapshot-path PATH or specify --no-snapshots")
 
+    if args.from_weights is not None and args.backbone_from_weights is not None:
+        raise ValueError("Cannot use both --from-weights and --backbone-from-weights")
+
 def parse_command_line_args(command_line_args):
     parser = argparse.ArgumentParser(description="Training script for training Similarity Network")
 
-    parser.add_argument("--from-weights", help="File to load backbone weights from")
-    # parser.add_argument("--gpu-names", help="Specify names of GPUs that should be visible")
+    parser.add_argument("--from-weights", help="File to load weights from")
+    parser.add_argument("--backbone-from-weights", help="File to load backbone weights from")
     parser.add_argument("--snapshot-path", help="Path to save snapshots")
     parser.add_argument("--no-snapshots", help="Flag to not use snapshots", action="store_true")
 
@@ -102,10 +106,22 @@ def main():
     else:
         raise ValueError("Unimplemented dataset type '{}'".format(args.dataset_type))
 
-    if args.from_weights is not None:
-        model = load_model(model_path=args.from_weights, backbone_name=args.backbone)
+    if args.from_weights is None:
+        BackboneClass = get_backbone_class(args.backbone)
+        if args.backbone_from_weights is None:
+            backbone_model = BackboneClass.from_weights(args.backbone_from_weights)
+        else:
+            backbone_model = BackboneClass()
+        model = create_similaritynet(backbone=backbone_model)
     else:
-        model = instantiate_model(backbone_name=args.backbone)
+        model = load_model(model_path=args.from_weights, backbone_name=args.backbone)
+
+
+
+    # if args.from_weights is not None:
+    #     model = load_model(model_path=args.from_weights, backbone_name=args.backbone)
+    # else:
+    #     model = instantiate_model(backbone_name=args.backbone)
 
     callbacks = create_callbacks(model=model, snapshot_path=args.snapshot_path)
 
